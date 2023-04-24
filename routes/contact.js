@@ -54,8 +54,8 @@ router.post("/", async (req, res) => {
 
   transporter.sendMail({
     to: email,
-    subject: "Contact Us Form EPO",
-    cc:`saadusufzai@gmail.com`,
+    subject: "",
+    cc:``,
     text: `Dear ${firstName, lastName}\n
     Thanks for contacting us. Our team Member will soon contact you on the followning email address.\n 
     ${email}.

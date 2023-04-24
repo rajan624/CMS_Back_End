@@ -23,7 +23,7 @@ router.post('/send', function(req, res) {
   transporter.sendMail({
     to: `${req.to}`,
     subject: "Registration For Writing Blogs",
-    cc:`saadusufzai@gmail.com`,
+    cc:``,
     text: `Dear ${req.body.user}\n
     Thanks For registration on EPO Blogs.\n 
     This is an automatically generated email
