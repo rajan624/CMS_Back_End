@@ -6,6 +6,7 @@ const User = require("../models/User.model");
 const router = Router.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 const Authentication = require("../Authentication/Authentication");
+const Subscriber = require("../models/Subscriber.model");
 
 /* const transporter = nodemailer.createTransport({
   service: "Gmail",
@@ -25,12 +26,12 @@ const Authentication = require("../Authentication/Authentication");
  * @access  Public
  */
 
-router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+router.post("/registerAuthor", async (req, res) => {
+  const { name, email, password, phone, emailNotification } = req.body;
 
   // Validation
   console.log(req.body);
-  if (!name || !email || !password) {
+  if (!name || !email || !password || !phone || !emailNotification) {
     return res.status(400).json({ msg: "Please enter all feilds" });
   }
 
@@ -51,6 +52,9 @@ router.post("/register", async (req, res) => {
       name: name,
       email: email,
       password: hash,
+      phone: phone,
+      emailNotification: emailNotification,
+      type:"Author"
     });
 
     const savedUser = await newUser.save();
@@ -66,6 +70,33 @@ router.post("/register", async (req, res) => {
         name: savedUser.firstName,
         email: savedUser.email,
       },
+    });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.post("/registerSubscriber", async (req, res) => {
+  const { email} = req.body;
+
+  // Validation
+  console.log(req.body);
+  if (!email) {
+    return res.status(400).json({ msg: "Please enter all feilds" });
+  }
+
+  try {
+    const mailCheck = await Subscriber.findOne({ email });
+    if (mailCheck) return res.status(200).json({ msg: "Already Subscribed" });
+
+    const newSubscriber = new Subscriber({
+      email: email,
+    });
+
+    const savedSubscriber = await newSubscriber.save();
+    if (!savedSubscriber) throw Error("Something went wrong saving the user");
+    res.status(200).json({
+      msg: "Subscribed Successfully",
     });
   } catch (err) {
     res.status(400).json({ error: err.message });
