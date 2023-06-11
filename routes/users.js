@@ -5,7 +5,7 @@ const nodemailer = require("nodemailer");
 const User = require("../models/User.model");
 const router = Router.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
-const Authentication = require("../Authentication/Authentication");
+const Authentication = require("../Middleware/verifyAuthentication");
 const Subscriber = require("../models/Subscriber.model");
 
 /* const transporter = nodemailer.createTransport({
@@ -149,7 +149,7 @@ router.post("/login", async (req, res) => {
  * @desc    Get all users
  * @access  Private
  */
-router.get("/profile", Authentication, async (req, res) => {
+router.get("/profile", async (req, res) => {
    const userId = req.user.id;
    // Retrieve user profile data from the database using the user ID
    try {
