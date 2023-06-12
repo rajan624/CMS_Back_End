@@ -7,19 +7,6 @@ const router = Router.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 const Authentication = require("../Middleware/verifyAuthentication");
 const Subscriber = require("../models/Subscriber.model");
-
-/* const transporter = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    type: "OAuth2",
-    user: process.env.EMAIL_USERNAME,
-    pass: process.env.EMAIL_PASSWORD,
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    refreshToken: process.env.REFRESH_TOKEN,
-  },
-});
- */
 /**
  * @route   POST api/user/register
  * @desc    Register new user
@@ -219,25 +206,3 @@ router.route("/update/:id").post((req, res) => {
 module.exports = router;
 
 
-
-    // transporter
-    //   .sendMail({
-    //     to: email,
-    //     subject: "Registration For Writing Blogs",
-    //     cc: `saadusufzai@gmail.com`,
-    //     text: `Dear ${(firstName, lastName)}\n
-    //     Thanks For registration on Environmental Protection Organization's Blogs.\n
-    //     The registered email adderess is ${email}.
-    //     This is an automatically generated email. Plese do not reply to this email address.
-    //     We will soon get back to you
-    //     \n
-    //     \n
-    //     \n
-    //     \n
-    //     Best Regards\n
-    //     EPO Admin`,
-    //   })
-    //   .then((res) => {
-    //     console.log(res.messageId, "Mail send");
-    //   })
-    //   .catch((err) => console.log(err));
