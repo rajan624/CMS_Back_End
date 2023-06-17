@@ -11,9 +11,12 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 //routes
-const userRouter = require("./routes/users");
-
+const authRouter = require("./routes/authRoute");
+const subscriberRoute = require("./routes/subscriberRoute");
+const userRoute = require("./routes/userRoute");
+app.use("/api/user", authRouter);
+app.use("/api/subscriber", subscriberRoute)
 app.use(middleware.Authentication);
-app.use("/api/user", userRouter);
+app.use("/api/user",userRoute)
 
 module.exports = app;
