@@ -4,6 +4,9 @@ const DEBUG = process.env.DEBUG;
 const getProfile = async (req, res) => {
   const userId = req.user.id;
   // Retrieve user profile data from the database using the user ID
+  if (DEBUG) {
+    console.log("Get Profile Function Start");
+  }
   try {
     const userProfile = await User.findById(userId);
     res.json({ profile: userProfile });
