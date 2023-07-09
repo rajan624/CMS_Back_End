@@ -7,10 +7,12 @@ const userSchema = new Schema({
   phone: { type: String, required: true },
   emailNotification: { type: Boolean, required: false },
   email: { type: String, required: true, unique: true },
+  profileImage:{type:String , required:false },
   type: { type: String, required: true, },
   password: { type: String, required: false },
   register_date: { type: Date, default: Date.now },
-});
+  
+}, { versionKey: false });
 
-const User = mongoose.model("users", userSchema);
-module.exports = User;
+module.exports = mongoose.model("Users", userSchema);
+ 
