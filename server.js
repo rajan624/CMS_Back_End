@@ -1,8 +1,10 @@
+
 const app = require("./app");
 const connect = require("./MongoDB/MongoConnection");
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 4000;
 require("dotenv").config();
 const DEBUG = process.env.DEBUG;
+
 connect()
   .then((result) => {
     try {
