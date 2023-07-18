@@ -10,7 +10,8 @@ async function connect() {
         socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
         family: 4, // Use IPv4, skip trying IPv6
     };
-    mongoose.connect("mongodb://localhost:27017/cms_db", options);
+    mongoose.connect(process.env.DB_URL, options);
+    // mongoose.connect("mongodb://localhost:27017/cms_db", options);
     const connection = mongoose.connection;
 
     connection.once("open", () => {
