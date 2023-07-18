@@ -133,7 +133,11 @@ router.get(
     const token = jwt.sign({ id: req.user._id }, JWT_SECRET, {
       expiresIn: 36000000,
     });
-    res.cookie("token", token, { httpOnly: false });
+    res.cookie("token", token, {
+      httpOnly: false,
+      domain: "cms-web-app-07.web.app", // Replace with your desired domain
+    });
+
     res.redirect("https://cms-web-app-07.web.app/");
   }
 );
