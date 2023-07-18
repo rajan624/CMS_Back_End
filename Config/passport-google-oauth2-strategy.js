@@ -11,7 +11,8 @@ passport.use(
       clientID:
         "328982532566-ke0s2gap820og2po1ftqkjhr2hbheb7i.apps.googleusercontent.com", // e.g. asdfghjkkadhajsghjk.apps.googleusercontent.com
       clientSecret: "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", // e.g. _ASDFA%KFJWIASDFASD#FAD-
-      callbackURL: "https://cms-web-app-07.web.app/api/user/google/callback",
+      callbackURL:
+        "https://cms-backend-ge37.onrender.com/api/user/google/callback",
     },
 
     async function (accessToken, refreshToken, profile, done) {
