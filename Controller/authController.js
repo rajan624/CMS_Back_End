@@ -80,8 +80,21 @@ const signUp = async (req, res) => {
   }
 };
 
+ const logOut = ( req , res ) => {
+//   console.log("🚀 ~ file: AuthController.js:84 ~ googleLogin ~ res:", res);
+  //  console.log("🚀 ~ file: AuthController.js:84 ~ googleLogin ~ req:", req);
+  try {
+    // res.cookie("auth_app", "", { httpOnly: false });
+    res.cookie("token", "f", { httpOnly: false });
+    res.status(200).json({"messages":"Logout Success"})
+    // Add more res.clearCookie() s
+  } catch (error) {
+    
+  }
+}
 
 module.exports = {
     login,
-    signUp
+  signUp,
+    logOut
 };

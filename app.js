@@ -8,14 +8,15 @@ const middleware = require("./Middleware/verifyAuthentication");
 require("dotenv").config();
 const app = express();
 const path = require("path");
+const cookieParser = require("cookie-parser");
 
 app.disable("x-powered-by");
 const corsOptions = {
-  origin: "*", // Replace with your frontend domain
+  origin: ["http://localhost:3000"], // Replace with your frontend domain
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
-
+app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(express.json());
@@ -84,7 +85,7 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(specs, { explorer: true })
 );
-app.use("", authRouter);
+app.use("/api/user", authRouter);
 app.use("/api/subscriber", subscriberRoute);
 app.use(middleware.Authentication);
 app.use("/api/user", userRoute);

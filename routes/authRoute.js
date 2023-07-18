@@ -1,8 +1,10 @@
 const Router = require("express");
 const router = Router.Router();
 const passport = require("passport");
+const jwt = require("jsonwebtoken")
 const authController = require("../Controller/authController");
 const cors = require("cors");
+const JWT_SECRET = process.env.JWT_SECRET;
 /**
  * @swagger
  * tags:
@@ -114,28 +116,22 @@ const cors = require("cors");
  *        description: Clientes obtidos com sucesso 
  */
 router.post("/login", authController.login);
+router.post("/logout", authController.logOut);
 router.post("/registerAuthor", authController.signUp);
-console.log("object");
 router.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+    "/auth/google",
+    passport.authenticate("google", { scope: ["profile", "email"] }),
 );
-console.log("object");
-// router.get(
-//   "/google/callback",
-//   passport.authenticate("google", {
-//     failureRedirect: "/",
-//     // successRedirect: "/",
-//   }),
-// //   loginPageController.loginHandle
-// );
-
 router.get(
   "/google/callback",
   cors(),
   passport.authenticate("google", { failureRedirect: "http://localhost:3000" }),
   function (req, res) {
     // Successful authentication, redirect secrets.
+      const token = jwt.sign({ id: req.user._id }, JWT_SECRET, {
+        expiresIn: 36000000,
+      });
+        res.cookie("token", token, { httpOnly: false });
     res.redirect("http://localhost:3000");
   }
 );

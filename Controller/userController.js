@@ -8,7 +8,9 @@ const getProfile = async (req, res) => {
     console.log("Get Profile Function Start");
   }
   try {
-    const userProfile = await User.findById(userId);
+    const userProfile = await User.findById(userId).select(
+      "-type  -password -register_date"
+    );
     res.json({ profile: userProfile });
   } catch (error) {
     console.log(error);

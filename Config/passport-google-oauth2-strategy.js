@@ -11,11 +11,10 @@ passport.use(
       clientID:
         "328982532566-ke0s2gap820og2po1ftqkjhr2hbheb7i.apps.googleusercontent.com", // e.g. asdfghjkkadhajsghjk.apps.googleusercontent.com
       clientSecret: "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", // e.g. _ASDFA%KFJWIASDFASD#FAD-
-      callbackURL: "http://localhost:4000/google/callback",
+      callbackURL: "http://localhost:4000/api/user/google/callback",
     },
 
     async function (accessToken, refreshToken, profile, done) {
-      console.log("🚀 ~ file: passport-google-oauth2-strategy.js:18 ~ profile:", profile)
       //   find a user
       console.log("gdddfg");
       const user = await User.findOne({ email: profile.emails[0].value });
@@ -31,8 +30,10 @@ passport.use(
         const hash = await bcrypt.hash(password, salt);
         const newUser = new User({
           name: profile.displayName,
-          email: profile.emails[0].value,
+          email: profile.emails[0]?.value,
+          profileImage: profile.photos[0]?.value,
           password: hash,
+          type: "Author",
         });
 
         const savedUser = await newUser.save();
@@ -50,7 +51,7 @@ passport.use(
 
 passport.serializeUser(function (user, cb) {
   process.nextTick(function () {
-    cb(null, { id: user.id, username: user.name, useremail: user.email });
+    cb(null, { id: user.id, username: user.name, usremail: user.email });
   });
 });
 
@@ -65,7 +66,6 @@ passport.checkAuthentication = function (req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-
   // if the user is not signed in
   return res.redirect("/login");
 };
