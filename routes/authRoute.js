@@ -125,14 +125,16 @@ router.get(
 router.get(
   "/google/callback",
   cors(),
-  passport.authenticate("google", { failureRedirect: "http://localhost:3000" }),
+  passport.authenticate("google", {
+    failureRedirect: "https://cms-web-app-07.web.app/",
+  }),
   function (req, res) {
     // Successful authentication, redirect secrets.
-      const token = jwt.sign({ id: req.user._id }, JWT_SECRET, {
-        expiresIn: 36000000,
-      });
-        res.cookie("token", token, { httpOnly: false });
-    res.redirect("http://localhost:3000");
+    const token = jwt.sign({ id: req.user._id }, JWT_SECRET, {
+      expiresIn: 36000000,
+    });
+    res.cookie("token", token, { httpOnly: false });
+    res.redirect("https://cms-web-app-07.web.app/");
   }
 );
 
