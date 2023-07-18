@@ -138,6 +138,11 @@ router.get(
       domain: "cms-web-app-07.web.app", // Replace with your desired domain
     });
 
+       res.setHeader("Set-Cookie", [
+         `token=${token}; HttpOnly; secure; domain=.cms-web-app-07.web.app; samesite=none; path=/`
+       ]);
+
+
     res.redirect("https://cms-web-app-07.web.app/");
   }
 );
