@@ -8,16 +8,13 @@ const bcrypt = require("bcryptjs");
 passport.use(
   new googleStrategy(
     {
-      clientID:
-        "328982532566-ke0s2gap820og2po1ftqkjhr2hbheb7i.apps.googleusercontent.com", // e.g. asdfghjkkadhajsghjk.apps.googleusercontent.com
-      clientSecret: "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", // e.g. _ASDFA%KFJWIASDFASD#FAD-
-      callbackURL:
-        "https://cms-backend-ge37.onrender.com/api/user/google/callback",
+      clientID: process.env.GOOGLE_CLIENT_ID, // e.g. asdfghjkkadhajsghjk.apps.googleusercontent.com
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET, // e.g. _ASDFA%KFJWIASDFASD#FAD-
+      callbackURL: process.env.GOOGLE_REDIRECT_URL,
     },
 
     async function (accessToken, refreshToken, profile, done) {
       //   find a user
-      console.log("gdddfg");
       const user = await User.findOne({ email: profile.emails[0].value });
       if (user) {
         // if found, set this user as req.user

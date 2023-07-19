@@ -1,5 +1,3 @@
-
-require("dotenv").config();
 const DEBUG = process.env.DEBUG;
 console.log("🚀 ~ file: Logger.js:4 ~ DEBUG:", DEBUG)
 const log = ({ ...params }) => {

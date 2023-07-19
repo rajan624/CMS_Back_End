@@ -1,6 +1,5 @@
 const morgan = require("morgan");
 const mongoose = require("mongoose");
-require("dotenv").config();
 const DEBUG = process.env.DEBUG;
 async function connect() {
     const options = {

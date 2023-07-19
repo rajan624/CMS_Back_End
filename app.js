@@ -5,7 +5,6 @@ const bodyParser = require("body-parser");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const middleware = require("./Middleware/verifyAuthentication");
-require("dotenv").config();
 const app = express();
 const path = require("path");
 const cookieParser = require("cookie-parser");

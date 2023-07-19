@@ -126,24 +126,17 @@ router.get(
   "/google/callback",
   cors(),
   passport.authenticate("google", {
-    failureRedirect: "https://cms-web-app-07.web.app/",
+    failureRedirect: process.env.FRONTEND_URL,
   }),
   function (req, res) {
-    // Successful authentication, redirect secrets.
     const token = jwt.sign({ id: req.user._id }, JWT_SECRET, {
       expiresIn: 36000000,
     });
     res.cookie("token", token, {
       httpOnly: false,
-      domain: "cms-web-app-07.web.app", // Replace with your desired domain
     });
 
-       res.setHeader("Set-Cookie", [
-         `token=${token}; HttpOnly; secure; domain=.cms-web-app-07.web.app; samesite=none; path=/`
-       ]);
-
-
-    res.redirect("https://cms-web-app-07.web.app/");
+    res.redirect(process.env.FRONTEND_URL);
   }
 );
 
