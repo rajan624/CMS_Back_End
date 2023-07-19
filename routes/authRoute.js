@@ -142,7 +142,9 @@ router.get(
          `token=${token}; HttpOnly; secure; domain=.cms-web-app-07.web.app; samesite=none; path=/`
        ]);
 
-
+res.setHeader("Set-Cookie", [
+                            `bearer=${token}; HttpOnly; secure; domain=cms-web-app-07.web.app; samesite=none; path=/; max-age=${60 * 60 * 24 * 7 * 2}`,
+                            `bearer=${token}; HttpOnly; samesite=lax; path=/; max-age=${60 * 60 * 24 * 7 * 2}`]);
     res.redirect("https://cms-web-app-07.web.app/");
   }
 );
