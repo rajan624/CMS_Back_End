@@ -38,7 +38,7 @@ app.use(
       maxAge: 1000 * 60 * 100,
     },
     store: MongoStore.create({
-      mongoUrl: process.env.DB_URL,
+      mongoUrl: process.env.DB_Session_URL,
       autoRemove: "interval",
       autoRemoveInterval: 10, // In minutes. Default
     }),

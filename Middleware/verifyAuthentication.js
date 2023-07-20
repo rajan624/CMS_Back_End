@@ -5,7 +5,6 @@ class Middleware {
    Authentication(req, res, next){
     const token = req.header("Authorization");
     if (!token) return res.status(401).json({ msg: "Access denied" });
-    console.log("🚀 ~ file: verifyAuthentication.js:9 ~ Middleware ~ Authentication ~ token:", token)
 
      try {
        if (DEBUG) {        
