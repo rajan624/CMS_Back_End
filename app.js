@@ -11,7 +11,7 @@ const cookieParser = require("cookie-parser");
 
 app.disable("x-powered-by");
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://cms-web-app-07.web.app/"], // Replace with your frontend domain
+  origin: ["http://localhost:3000", "https://cms-web-app-07.web.app"], // Replace with your frontend domain
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
