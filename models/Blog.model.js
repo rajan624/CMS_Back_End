@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const User = require("./User.model");
+const Users = require("./User.model");
 
 const blogSchema = new Schema(
   {
@@ -10,7 +10,7 @@ const blogSchema = new Schema(
     imageUrl: { type: String, required: true },
     adminApproval: { type: Boolean, required: true },
     draft: { type: Boolean, required: true },
-    createdBy: { type: Schema.Types.ObjectId, ref: "User" },
+    createdBy: { type: Schema.Types.ObjectId, ref: "Users" },
     htmlData: { type: String, required: false },
     like: { type: Number, required: false },
     created_date: { type: Date, default: Date.now },
