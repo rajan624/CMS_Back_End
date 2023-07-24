@@ -5,5 +5,7 @@ const publicController = require("../Controller/publicController");
 
 router.get("/bestStories", publicController.bestStories);
 
+router.get("/:blogId", publicController.getBlogById);
+
 
 module.exports = router;
