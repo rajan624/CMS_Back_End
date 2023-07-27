@@ -16,7 +16,6 @@ const bestStories = async (req, res) => {
         res.status(200).json({ data: bestBlog });
         
     } catch (error) {
-        console.log("🚀 ~ file: publicController.js:13 ~ bestStories ~ error:", error)
         logger.error(`Error in Best Stories controller ${error}`)
         res.status(500).json({error:error.messages})
     }

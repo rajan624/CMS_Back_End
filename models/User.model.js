@@ -8,6 +8,8 @@ const userSchema = new Schema({
   emailNotification: { type: Boolean, required: false },
   email: { type: String, required: true, unique: true },
   profileImage:{type:String , required:false },
+  tags:{type:String , required:false },
+  description:{type:String , required:false },
   type: { type: String, required: true, },
   password: { type: String, required: true },
   register_date: { type: Date, default: Date.now },
