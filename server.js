@@ -18,7 +18,7 @@ connect()
       const io = socket(server, {
         pingTimeout: 60000,
         cors: {
-          origin: process.env.FRONTEND_URL,
+          origin: "https://cms-web-app-07.web.app",
           // credentials: true,
         },
       });
