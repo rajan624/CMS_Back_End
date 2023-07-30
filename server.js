@@ -18,7 +18,7 @@ connect()
       const io = socket(server, {
         pingTimeout: 60000,
         cors: {
-          origin: "http://localhost:3000",
+          origin: process.env.FRONTEND_URL,
           // credentials: true,
         },
       });
