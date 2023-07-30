@@ -11,6 +11,7 @@ router.get("/likeMyBlog/:id", userController.likeMyBlog);
 router.get("/bookmarkMyBlog/:id", userController.BookMarkMyBlog);
 router.get("/startChart/:id", userController.startChat);
 router.get("/fetchChats", userController.fetchChats);
+router.get("/fetchMessages/:chatId", userController.fetchMessages);
 router.get("/followUser/:id", userController.followUser);
 module.exports = router;
 

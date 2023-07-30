@@ -5,7 +5,7 @@ const connect = require("./MongoDB/MongoConnection");
 const port = process.env.PORT || 4000;
 const DEBUG = process.env.DEBUG;
 const socket = require("socket.io");
-const {Messages, setup } = require("./routes/chatRoute");
+const {Messages, setup, joinChat } = require("./routes/chatRoute");
 
 connect()
   .then((result) => {
@@ -26,6 +26,7 @@ connect()
       io.on("connection", (socket) => {
         setup(socket);
         Messages(socket);
+        joinChat(socket)
       })
     } catch (error) {
       if (DEBUG) {

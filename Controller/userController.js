@@ -3,6 +3,7 @@ const DEBUG = process.env.DEBUG;
 const logger = require("../Config/Logger")
 const Blog = require("../models/Blog.model");
 const Chat = require("../models/Chat.Model");
+const Message = require("../models/Message.Model");
 
 const getProfile = async (req, res) => {
   const userId = req?.user?.id;
@@ -172,6 +173,17 @@ const fetchChats = async (req, res) => {
     throw new Error(error.message);
   }
 };
+const fetchMessages = async (req, res) => {
+  try {
+        const messages = await Message.find({ chat: req.params.chatId })
+          .populate("sender", "name pic email")
+          .populate("chat");
+        res.json(messages);
+  } catch (error) {
+    res.status(400);
+    throw new Error(error.message);
+  }
+};
 const followUser = async(req, res) => {
   logger.log("like my start Chat function start");
   try {    
@@ -195,4 +207,5 @@ module.exports = {
   followUser,
   getProfileById,
   fetchChats,
+  fetchMessages,
 };
