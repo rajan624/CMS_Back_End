@@ -21,6 +21,45 @@ const bestStories = async (req, res) => {
     }
 
 }
+const bestAuthorStories = async (req, res) => {
+    try { 
+        
+        logger.log('bestStories Function Start');
+        const bestBlog = await Blog.find()
+          .sort({ like: -1 })
+          .limit(12)
+          .select("imageUrl heading description _id tagLine")
+          .populate({
+            path: "createdBy",
+            select: "-email -register_date -type -password",
+          })
+          .exec();
+        res.status(200).json({ data: bestBlog });
+        
+    } catch (error) {
+        logger.error(`Error in Best Stories controller ${error}`)
+        res.status(500).json({error:error.messages})
+    }
+
+}
+const recommendedStories = async (req, res) => {
+  try {
+    logger.log("bestStories Function Start");
+    const bestBlog = await Blog.find()
+      .sort({ like: -1 })
+      .limit(12)
+      .select("imageUrl heading description _id tagLine")
+      .populate({
+        path: "createdBy",
+        select: "-email -register_date -type -password",
+      })
+      .exec();
+    res.status(200).json({ data: bestBlog });
+  } catch (error) {
+    logger.error(`Error in Best Stories controller ${error}`);
+    res.status(500).json({ error: error.messages });
+  }
+};
 const getBlogById = async (req, res) => {
     try { 
         
@@ -45,4 +84,6 @@ const getBlogById = async (req, res) => {
 module.exports = {
   bestStories,
   getBlogById,
+  bestAuthorStories,
+  recommendedStories,
 };

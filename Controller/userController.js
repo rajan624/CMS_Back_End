@@ -2,9 +2,26 @@ const User = require("../models/User.model");
 const DEBUG = process.env.DEBUG;
 const logger = require("../Config/Logger")
 const Blog = require("../models/Blog.model");
+const Chat = require("../models/Chat.Model");
 
 const getProfile = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req?.user?.id;
+  // Retrieve user profile data from the database using the user ID
+  if (DEBUG) {
+    console.log("Get Profile Function Start");
+  }
+  try {
+    const userProfile = await User.findById(userId).select(
+      "-type  -password -register_date"
+    );
+    res.json({ profile: userProfile });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Server error" });
+  }
+};
+const getProfileById = async (req, res) => {
+  const userId = req?.params?.id;
   // Retrieve user profile data from the database using the user ID
   if (DEBUG) {
     console.log("Get Profile Function Start");
@@ -67,8 +84,115 @@ const myBlog = async (req, res) => {
     res.status(500).json({ error: `${error}` });
   }
 };
+
+const likeMyBlog = async(req, res) => {
+  logger.log("like my blog function start");
+  try {    
+    const blogId = req?.params?.id;
+    console.log("🚀 ~ file: userController.js:76 ~ likeMyBlog ~ blogId:", blogId)
+    const likeBlog = await Blog.findById(blogId)
+    likeBlog.like.push(req?.user?._id);
+    likeBlog.save();
+    return res.status(200).json({data: "Blog Liked" });
+  } catch (error) {
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+
+}
+const BookMarkMyBlog = async(req, res) => {
+  logger.log("like my blog function start");
+  try {    
+    const blogId = req?.params?.id;
+    const userDocs = await User.findById(req.user.id);
+    userDocs.bookmark.push(blogId);
+    userDocs.save();
+    return res.status(200).json({ data: "Added To Bookmark" });
+  } catch (error) {
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+
+}
+const startChat = async(req, res) => {
+  logger.log("like my start Chat function start");
+  try {    
+    const userId = req?.params?.id;
+    if ( !userId) {
+      return res.status(400),json({msg:"Invalid Data]"})
+    }
+    var isChat = await Chat.find({
+      isGroupChat: false,
+      $and: [
+        { users: { $elemMatch: { $eq: req.user.id } } },
+        { users: { $elemMatch: { $eq: userId } } },
+      ],
+    })
+      .populate("users", "-password")
+      .populate("latestMessage");
+
+    isChat = await User.populate(isChat, {
+      path: "latestMessage.sender",
+      select: "name pic email",
+    });
+
+    if (isChat.length > 0) {
+      res.send(isChat[0]);
+    } else {
+      const newChat = new Chat({
+        chatName: "SingleChat",
+        isGroupChat: false,
+        users: [userId, req.user.id],
+        groupAdmin: req.user.id,
+      });
+      const savedChat = await newChat.save();
+      return res.status(200).json({ data: savedChat });
+    }
+  } catch (error) {
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+
+}
+
+
+const fetchChats = async (req, res) => {
+  try {
+    Chat.find({ users: { $elemMatch: { $eq: req.user.id } } })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password")
+      .populate("latestMessage")
+      .sort({ updatedAt: -1 })
+      .then(async (results) => {
+        results = await User.populate(results, {
+          path: "latestMessage.sender",
+          select: "name pic email",
+        });
+        res.status(200).send(results);
+      });
+  } catch (error) {
+    res.status(400);
+    throw new Error(error.message);
+  }
+};
+const followUser = async(req, res) => {
+  logger.log("like my start Chat function start");
+  try {    
+    const userId = req?.params?.id;
+    const userDocs = await User.findById(userId);
+    userDocs.follower.push(req.user.id);
+    userDocs.save();
+    return res.status(200).json({ data: `${userDocs?.name} Following Started` });
+  } catch (error) {
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+
+}
 module.exports = {
   getProfile,
   updateProfile,
+  startChat,
   myBlog,
+  likeMyBlog,
+  BookMarkMyBlog,
+  followUser,
+  getProfileById,
+  fetchChats,
 };

@@ -1,6 +1,6 @@
 const DEBUG = process.env.DEBUG;
 console.log("🚀 ~ file: Logger.js:4 ~ DEBUG:", DEBUG)
-const log = ({ ...params }) => {
+const log = ({params }) => {
     if (DEBUG) {
         console.log(params);
     }
