@@ -3,8 +3,11 @@ const DEBUG = process.env.DEBUG;
 const Blog = require("../models/Blog.model")
 const createBlog = async (req, res) => {
     try {        
-        const formData = req.body;
-        const imageUrl = req.file.path; 
+      const formData = req.body;
+      const protocol = req.protocol; // 'http' or 'https'
+      const domain = req.get("host"); // Get the domain from the request headers
+      const fullURL = `${protocol}://${domain}`;
+        const imageUrl = fullURL+"/"+req.file.path; 
         if (DEBUG) {
             console.log("Form Data ", formData);
             console.log("Image Data ", imageUrl);
@@ -19,8 +22,9 @@ const createBlog = async (req, res) => {
            imageUrl: imageUrl, // Store the image URL in the new blog object
            adminApproval: false,
            draft: formData.draft,
-           userId: req.user.id,
+           createdBy: req.user.id,
          });
+          console.log("🚀 ~ file: blogController.js:23 ~ createBlog ~ req:", req.user.id)
        // Save the new blog object to MongoDB using Mongoose
        const savedBlog = await newBlog.save();
        res.status(200).json(savedBlog);
@@ -32,8 +36,11 @@ const createBlog = async (req, res) => {
     }
 }
 const uploadBlogImage = async (req, res) => {
-    try {        
-        const imageUrl = req?.file?.path; 
+  try { 
+      const protocol = req.protocol; // 'http' or 'https'
+      const domain = req.get("host"); // Get the domain from the request headers
+      const fullURL = `${protocol}://${domain}`;
+        const imageUrl = fullURL+"/"+req?.file?.path; 
         if (DEBUG) {
             console.log("Image Data ", imageUrl);
       }

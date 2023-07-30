@@ -12,7 +12,7 @@ const cookieParser = require("cookie-parser");
 app.disable("x-powered-by");
 const corsOptions = {
   origin: ["http://localhost:3000", "https://cms-web-app-07.web.app"], // Replace with your frontend domain
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST","PATCH", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 app.use(cookieParser());
@@ -51,6 +51,7 @@ const authRouter = require("./routes/authRoute");
 const subscriberRoute = require("./routes/subscriberRoute");
 const userRoute = require("./routes/userRoute");
 const blogRoute = require("./routes/blogRoute");
+const publicRoute = require("./routes/publicRoute");
 const options = {
   definition: {
     openapi: "3.1.0",
@@ -85,6 +86,7 @@ app.use(
   swaggerUi.setup(specs, { explorer: true })
 );
 app.use("/api/user", authRouter);
+app.use("/api/blog", publicRoute);
 app.use("/api/subscriber", subscriberRoute);
 app.use(middleware.Authentication);
 app.use("/api/user", userRoute);

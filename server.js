@@ -4,15 +4,30 @@ const app = require("./app");
 const connect = require("./MongoDB/MongoConnection");
 const port = process.env.PORT || 4000;
 const DEBUG = process.env.DEBUG;
+const socket = require("socket.io");
+const {Messages, setup, joinChat } = require("./routes/chatRoute");
 
 connect()
   .then((result) => {
     try {
-      app.listen(port, () => {
+      const server =  app.listen(port, () => {
         if (DEBUG) {
           console.log(`Server is running on port: ${port}`);
         }
       });
+      const io = socket(server, {
+        pingTimeout: 60000,
+        cors: {
+          origin: process.env.FRONTEND_URL,
+          // credentials: true,
+        },
+      });
+
+      io.on("connection", (socket) => {
+        setup(socket);
+        Messages(socket);
+        joinChat(socket)
+      })
     } catch (error) {
       if (DEBUG) {
         console.log("Can not connect to server");
