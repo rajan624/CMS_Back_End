@@ -128,8 +128,8 @@ const likeMyBlog = async (req, res) => {
   }
 };
 const BookMarkMyBlog = async (req, res) => {
-  logger.log("like my blog function start");
   try {
+
     const blogId = req?.params?.id;
     const userDocs = await User.findById(req.user.id);
     userDocs.bookmark.push(blogId);
