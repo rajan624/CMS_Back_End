@@ -38,9 +38,18 @@ const joinChat = (socket) => {
       socket.emit("connected");
     });
 }
-
+const typing = (socket) => {
+  socket.on("typing", (room) => {
+    socket.in(room).emit("typing");
+    console.log("typing start")
+  })
+  socket.on("stopTyping", (room) => {
+    socket.in(room).emit("stopTyping"); console.log("typing stop")
+  })
+}
 module.exports = {
   Messages,
   setup,
   joinChat,
+  typing,
 };
