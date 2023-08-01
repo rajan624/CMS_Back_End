@@ -16,7 +16,7 @@ const userSchema = new Schema(
     type: { type: String, required: true },
     password: { type: String, required: true },
     register_date: { type: Date, default: Date.now },
-    follower: [{ type: Schema.Types.ObjectId, ref: "Users" }],
+    follower: [{ type: Schema.Types.ObjectId, ref: "Users"  }],
     following: [{ type: Schema.Types.ObjectId, ref: "Users" }],
   },
   { versionKey: false }

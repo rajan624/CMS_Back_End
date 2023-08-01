@@ -64,12 +64,14 @@ const getBlogById = async (req, res) => {
     try { 
         
         console.log('getBlogById Function Start'+req.params.blogId);
-      const bestBlog = await Blog.findById(req.params.blogId)
+      let bestBlog = await Blog.findById(req.params.blogId)
           .populate({
             path: "createdBy",
             select: "-email -register_date -type -password",
           })
-          .exec();
+        .exec();
+      bestBlog = bestBlog.toObject();
+      bestBlog.like = bestBlog.like.length;
         res.status(200).json({ data: bestBlog });
         
     } catch (error) {

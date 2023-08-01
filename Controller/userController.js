@@ -1,6 +1,6 @@
 const User = require("../models/User.model");
 const DEBUG = process.env.DEBUG;
-const logger = require("../Config/Logger")
+const logger = require("../Config/Logger");
 const Blog = require("../models/Blog.model");
 const Chat = require("../models/Chat.Model");
 const Message = require("../models/Message.Model");
@@ -28,16 +28,20 @@ const getProfileById = async (req, res) => {
     console.log("Get Profile Function Start");
   }
   try {
-    const userProfile = await User.findById(userId).select(
+    let userProfile = await User.findById(userId).select(
       "-type  -password -register_date"
     );
+    const count = await Blog.countDocuments({ createdBy: req?.params?.id });
+    userProfile = userProfile.toObject();
+    userProfile.follower = userProfile.follower.length;
+    userProfile.following = userProfile.following.length;
+    userProfile.post = count;
     res.json({ profile: userProfile });
   } catch (error) {
     console.log(error);
     res.status(500).json({ msg: "Server error" });
   }
 };
-
 
 const updateProfile = async (req, res) => {
   const userId = req.user.id;
@@ -50,7 +54,7 @@ const updateProfile = async (req, res) => {
       "-type  -password -register_date"
     );
     if (req.user.id != userProfile._id) {
-      return res.status(403).json({msg:"Unauthorized Access"})
+      return res.status(403).json({ msg: "Unauthorized Access" });
     }
     userProfile.name = req?.body?.name;
     userProfile.tags = req?.body?.tags;
@@ -65,8 +69,8 @@ const updateProfile = async (req, res) => {
 
 const myBlog = async (req, res) => {
   try {
-    const userId = req.user.id; // Assuming the parameter is passed as a query parameter (e.g., /bestStories?userId=123)
-    console.log("🚀 ~ file: userController.js:51 ~ myBlog ~ userId:", userId)
+    const userId = req.params.id; // Assuming the parameter is passed as a query parameter (e.g., /bestStories?userId=123)
+    console.log("🚀 ~ file: userController.js:51 ~ myBlog ~ userId:", userId);
 
     // Check if the user ID parameter exists and is a valid MongoDB ObjectId
 
@@ -85,24 +89,47 @@ const myBlog = async (req, res) => {
     res.status(500).json({ error: `${error}` });
   }
 };
+const myBlogById = async (req, res) => {
+  try {
+    const userId = req.params.id; // Assuming the parameter is passed as a query parameter (e.g., /bestStories?userId=123)
+    console.log("🚀 ~ file: userController.js:51 ~ myBlog ~ userId:", userId);
 
-const likeMyBlog = async(req, res) => {
+    // Check if the user ID parameter exists and is a valid MongoDB ObjectId
+
+    const bestBlog = await Blog.find({ createdBy: userId })
+      .sort({ like: -1 })
+      .select("imageUrl heading description _id tagLine -createdBy")
+      .populate({
+        path: "createdBy",
+        select: "-email -register_date -type -password",
+      })
+      .exec();
+    res.status(200).json({ data: bestBlog });
+  } catch (error) {
+    console.log(`Error in Best Stories controller ${error}`);
+    res.status(500).json({ error: `${error}` });
+  }
+};
+
+const likeMyBlog = async (req, res) => {
   logger.log("like my blog function start");
-  try {    
+  try {
     const blogId = req?.params?.id;
-    console.log("🚀 ~ file: userController.js:76 ~ likeMyBlog ~ blogId:", blogId)
-    const likeBlog = await Blog.findById(blogId)
+    console.log(
+      "🚀 ~ file: userController.js:76 ~ likeMyBlog ~ blogId:",
+      blogId
+    );
+    const likeBlog = await Blog.findById(blogId);
     likeBlog.like.push(req?.user?._id);
     likeBlog.save();
-    return res.status(200).json({data: "Blog Liked" });
+    return res.status(200).json({ data: "Blog Liked" });
   } catch (error) {
     return res.status(500).json({ msg: "Internal Server Error" });
   }
-
-}
-const BookMarkMyBlog = async(req, res) => {
+};
+const BookMarkMyBlog = async (req, res) => {
   logger.log("like my blog function start");
-  try {    
+  try {
     const blogId = req?.params?.id;
     const userDocs = await User.findById(req.user.id);
     userDocs.bookmark.push(blogId);
@@ -111,14 +138,13 @@ const BookMarkMyBlog = async(req, res) => {
   } catch (error) {
     return res.status(500).json({ msg: "Internal Server Error" });
   }
-
-}
-const startChat = async(req, res) => {
+};
+const startChat = async (req, res) => {
   logger.log("like my start Chat function start");
-  try {    
+  try {
     const userId = req?.params?.id;
-    if ( !userId) {
-      return res.status(400),json({msg:"Invalid Data]"})
+    if (!userId) {
+      return res.status(400), json({ msg: "Invalid Data]" });
     }
     var isChat = await Chat.find({
       isGroupChat: false,
@@ -150,9 +176,7 @@ const startChat = async(req, res) => {
   } catch (error) {
     return res.status(500).json({ msg: "Internal Server Error" });
   }
-
-}
-
+};
 
 const fetchChats = async (req, res) => {
   try {
@@ -162,41 +186,71 @@ const fetchChats = async (req, res) => {
       .populate("latestMessage")
       .sort({ updatedAt: -1 })
       .then(async (results) => {
+        console.log(
+          "🚀 ~ file: userController.js:187 ~ .then ~ results:",
+          results
+        );
         results = await User.populate(results, {
           path: "latestMessage.sender",
-          select: "name pic email",
+          select: "name pic profileImage",
         });
         res.status(200).send(results);
       });
   } catch (error) {
     res.status(400);
-    throw new Error(error.message);
+    // throw new Error(error.message);
   }
 };
 const fetchMessages = async (req, res) => {
   try {
-        const messages = await Message.find({ chat: req.params.chatId })
-          .populate("sender", "name pic email")
-          .populate("chat");
-        res.json(messages);
+    const messages = await Message.find({ chat: req.params.chatId }).populate(
+      "chat"
+    );
+    res.json(messages);
   } catch (error) {
     res.status(400);
     throw new Error(error.message);
   }
 };
-const followUser = async(req, res) => {
+const followUser = async (req, res) => {
   logger.log("like my start Chat function start");
-  try {    
+  try {
     const userId = req?.params?.id;
+    const selfId = req?.user?.id;
+
+    // Check if the user is already following the target user
+    const selfDocs = await User.findById(selfId);
+    if (selfDocs.following.includes(userId)) {
+      return res
+        .status(400)
+        .json({ data: "You are already following this user." });
+    }
+
+    // Check if the target user is already being followed by the current user
     const userDocs = await User.findById(userId);
-    userDocs.follower.push(req.user.id);
-    userDocs.save();
-    return res.status(200).json({ data: `${userDocs?.name} Following Started` });
+    if (userDocs.follower.includes(selfId)) {
+      return res
+        .status(400)
+        .json({ data: "You are already followed by this user." });
+    }
+
+    // Update following array for the current user (selfDocs)
+    selfDocs.following.push(userId);
+    await selfDocs.save();
+
+    // Update follower array for the target user (userDocs)
+    userDocs.follower.push(selfId);
+    await userDocs.save();
+
+    return res
+      .status(200)
+      .json({ data: `${userDocs?.name} Following Started` });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
+};
 
-}
 module.exports = {
   getProfile,
   updateProfile,
@@ -208,4 +262,5 @@ module.exports = {
   getProfileById,
   fetchChats,
   fetchMessages,
+  myBlogById,
 };
