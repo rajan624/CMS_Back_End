@@ -7,6 +7,7 @@ router.get("/profile", userController.getProfile );
 router.get("/profile/:id", userController.getProfileById );
 router.patch("/profile", userController.updateProfile);
 router.get("/myBlog", userController.myBlog);
+router.get("/myBlog/:id", userController.myBlogById);
 router.get("/likeMyBlog/:id", userController.likeMyBlog);
 router.get("/bookmarkMyBlog/:id", userController.BookMarkMyBlog);
 router.get("/startChart/:id", userController.startChat);

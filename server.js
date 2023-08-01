@@ -1,16 +1,15 @@
-
-require("dotenv").config({path:`.env.development`});
+require("dotenv").config({ path: `.env.development` });
 const app = require("./app");
 const connect = require("./MongoDB/MongoConnection");
 const port = process.env.PORT || 4000;
 const DEBUG = process.env.DEBUG;
 const socket = require("socket.io");
-const {Messages, setup, joinChat } = require("./routes/chatRoute");
+const { Messages, setup, joinChat } = require("./routes/chatRoute");
 
 connect()
   .then((result) => {
     try {
-      const server =  app.listen(port, () => {
+      const server = app.listen(port, () => {
         if (DEBUG) {
           console.log(`Server is running on port: ${port}`);
         }
@@ -26,8 +25,8 @@ connect()
       io.on("connection", (socket) => {
         setup(socket);
         Messages(socket);
-        joinChat(socket)
-      })
+        joinChat(socket);
+      });
     } catch (error) {
       if (DEBUG) {
         console.log("Can not connect to server");
@@ -35,7 +34,7 @@ connect()
     }
   })
   .catch((err) => {
-    if (DEBUG) {      
+    if (DEBUG) {
       console.log(err);
       console.log("Invalid database connection");
     }
