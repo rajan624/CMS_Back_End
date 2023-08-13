@@ -17,6 +17,16 @@ const blogSchema = new Schema(
   },
   { versionKey: false }
 );
-
+// Add a static method to the schema for search functionality
+blogSchema.statics.search = async function (searchText) {
+  const searchRegex = new RegExp(searchText, "i"); // Case-insensitive search
+  return this.find({
+    $or: [
+      { heading: searchRegex },
+      { description: searchRegex },
+      { tagLine: { $in: [searchRegex] } },
+    ],
+  });
+};
 const Blog = mongoose.model("blog", blogSchema);
 module.exports = Blog;

@@ -6,7 +6,7 @@ const publicController = require("../Controller/publicController");
 router.get("/bestStories", publicController.bestStories);
 router.get("/bestAuthorStories", publicController.bestAuthorStories);
 router.get("/recommendedStories", publicController.recommendedStories);
-
+router.get("/search", publicController.search);
 router.get("/:blogId", publicController.getBlogById);
 
 

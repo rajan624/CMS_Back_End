@@ -186,10 +186,6 @@ const fetchChats = async (req, res) => {
       .populate("latestMessage")
       .sort({ updatedAt: -1 })
       .then(async (results) => {
-        console.log(
-          "🚀 ~ file: userController.js:187 ~ .then ~ results:",
-          results
-        );
         results = await User.populate(results, {
           path: "latestMessage.sender",
           select: "name pic profileImage",
@@ -251,6 +247,45 @@ const followUser = async (req, res) => {
   }
 };
 
+const follwerSuggestion = async( req , res ) =>{
+  try {
+    const creatorsWithTenOrMoreBlogs = await Blog.aggregate([
+      {
+        $group: {
+          _id: "$createdBy",
+          blogCount: { $sum: 1 },
+        },
+      },
+      {
+        $match: {
+          blogCount: { $gte: 0 },
+        },
+      },
+    ]);
+
+    let creatorIds = creatorsWithTenOrMoreBlogs.map((item) => item._id);
+    let user = await User.findById(req?.user?.id);
+    let alreadyFollower = user.following;
+    alreadyFollower.push(req?.user?.id);
+    let filterArray = creatorIds.filter((element) => !alreadyFollower.includes(element));
+    console.log(filterArray)
+    const creatorsInfo = await User.find(
+      { _id: { $in: filterArray } },
+      { name: 1, profileImage: 1 }
+    );
+
+    console.log(creatorsInfo);
+    console.log(
+      "🚀 ~ file: userController.js:290 ~ follwerSuggestion ~ userSuggestion:",
+      creatorsInfo
+    );
+    return res.status(200).json({data:creatorsInfo})
+   } catch (error) {
+    console.log(error);
+    return res.status(500).json({msg : "Internal Server Error"})
+  }
+}
+
 module.exports = {
   getProfile,
   updateProfile,
@@ -263,4 +298,5 @@ module.exports = {
   fetchChats,
   fetchMessages,
   myBlogById,
+  follwerSuggestion,
 };

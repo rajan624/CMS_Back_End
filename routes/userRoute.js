@@ -14,6 +14,8 @@ router.get("/startChart/:id", userController.startChat);
 router.get("/fetchChats", userController.fetchChats);
 router.get("/fetchMessages/:chatId", userController.fetchMessages);
 router.get("/followUser/:id", userController.followUser);
+router.get("/getFollowerSuggestion", userController.follwerSuggestion);
+router.get("/search", userController.follwerSuggestion);
 module.exports = router;
 
 
