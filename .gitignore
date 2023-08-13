@@ -25,3 +25,5 @@ yarn-error.log*
 
 #Static Folder
 /Static
+#Static Folder
+/Static

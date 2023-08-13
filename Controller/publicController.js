@@ -1,3 +1,4 @@
+const { serializeUser } = require("passport");
 const logger = require("../Config/Logger");
 const Blog = require("../models/Blog.model")
 const bestStories = async (req, res) => {
@@ -23,10 +24,11 @@ const bestStories = async (req, res) => {
 }
 const bestAuthorStories = async (req, res) => {
     try { 
-        
+      const offset = req.query.offset || 0;
         logger.log('bestStories Function Start');
         const bestBlog = await Blog.find()
-          .sort({ like: -1 })
+          .sort({ createdBy: -1 })
+          .skip(offset)
           .limit(12)
           .select("imageUrl heading description _id tagLine")
           .populate({
@@ -40,7 +42,6 @@ const bestAuthorStories = async (req, res) => {
         logger.error(`Error in Best Stories controller ${error}`)
         res.status(500).json({error:error.messages})
     }
-
 }
 const recommendedStories = async (req, res) => {
   try {
@@ -83,9 +84,22 @@ const getBlogById = async (req, res) => {
 }
 
 
+const search = async(req, res) => {
+  const searchText = req?.query?.search; // Replace with the actual search text
+  try {
+    const searchResult = await Blog.search(searchText);
+    console.log(searchResult);
+    return res.status(200).json({ data: searchResult });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({msg:"Internal Server Error"})
+  }
+};
+
 module.exports = {
   bestStories,
   getBlogById,
   bestAuthorStories,
   recommendedStories,
+  search,
 };
