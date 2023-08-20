@@ -180,6 +180,8 @@ const startChat = async (req, res) => {
 
 const fetchChats = async (req, res) => {
   try {
+    const userRole = await User.findById(req.user.id);
+    
     Chat.find({ users: { $elemMatch: { $eq: req.user.id } } })
       .populate("users", "-password")
       .populate("groupAdmin", "-password")

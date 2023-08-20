@@ -26,7 +26,29 @@ blogSchema.statics.search = async function (searchText) {
       { description: searchRegex },
       { tagLine: { $in: [searchRegex] } },
     ],
-  });
+  })
+    .select(
+      "-adminApproval -description -htmlData -draft -adminApproval -imageUrl -tagLine -createdBy -like -created_date"
+    )
+    .limit(10)
+    .exec();
+};
+blogSchema.statics.searchAll = async function (searchText) {
+  const searchRegex = new RegExp(searchText, "i"); // Case-insensitive search
+  return this.find({
+    $or: [
+      { heading: searchRegex },
+      { description: searchRegex },
+      { tagLine: { $in: [searchRegex] } },
+    ],
+  })
+    .populate({
+      path: "createdBy",
+      select:
+        "-email -register_date -type -following -follower -bookmark -password",
+    })
+    .select("-adminApproval -draft -adminApproval")
+    .exec();
 };
 const Blog = mongoose.model("blog", blogSchema);
 module.exports = Blog;

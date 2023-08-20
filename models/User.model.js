@@ -21,6 +21,35 @@ const userSchema = new Schema(
   },
   { versionKey: false }
 );
+userSchema.statics.search = async function (searchText) {
+  const searchRegex = new RegExp(searchText, "i"); // Case-insensitive search
+  return this.find({
+    $or: [
+      { name: searchRegex },
+      { email: searchRegex },
+      { tags: { $in: [searchRegex] } },
+    ],
+  })
+    .select(
+      "-phone -email -emailNotification -profileImage -tags -description -bookmark -password -register_date -follower -following"
+    )
+    .limit(10)
+    .exec();
+};
+userSchema.statics.searchAll = async function (searchText) {
+  const searchRegex = new RegExp(searchText, "i"); // Case-insensitive search
+  return this.find({
+    $or: [
+      { name: searchRegex },
+      { email: searchRegex },
+      { tags: { $in: [searchRegex] } },
+    ],
+  })
+    .select(
+      "-phone -emailNotification -bookmark -password -register_date -follower -following"
+    )
+    .exec();
+};
 
 module.exports = mongoose.model("Users", userSchema);
  
