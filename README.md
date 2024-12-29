@@ -66,5 +66,5 @@ The API supports real-time messaging using Socket.io. Once a user logs in, a Web
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/social-media-dashboard-backend.git
-   cd social-media-dashboard-backend
+   git clone https://github.com/rajan624/CMS_Back_End.git
+   cd CMS_Back_End
